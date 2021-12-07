@@ -7,7 +7,7 @@ module.exports.getAllTasks = (req, res) => {
 }
 
 module.exports.createNewTask = (req, res) => {
-  if(req.body.text !== undefined && typeof req.body.isCheck === "boolean") {
+  if (req.body.text !== undefined && typeof req.body.isCheck === "boolean") {
     const task = new Task(req.body);
     task.save().then(result => {
       res.send({ data: result });
@@ -18,10 +18,10 @@ module.exports.createNewTask = (req, res) => {
 }
 
 module.exports.changeTaskInfo = (req, res) => {
-  if(req.query.id !== undefined && (req.body.text !== undefined && typeof req.body.isCheck === "boolean")) {
+  if (req.query.id !== undefined && (req.body.text !== undefined || typeof req.body.isCheck === "boolean") ) {
     const params = req.query.id;
     const body = req.body;
-    Task.findByIdAndUpdate(params, { text: body.text, isCheck: body.isCheck }).then(result => {
+    Task.findByIdAndUpdate(params, body).then(result => {
       Task.find().then(result => res.send({ data: result }));
     });
   } else {
@@ -30,11 +30,11 @@ module.exports.changeTaskInfo = (req, res) => {
 }
 
 module.exports.deleteTask = (req, res) => {
-  if(req.query.id === undefined) {
+  if (req.query.id === undefined) {
     res.status(404).send("Error, please enter the id.");
   } else {
     const identifier = req.query.id;
-    Task.deleteOne({ _id : identifier }).then(result => {
+    Task.deleteOne({ _id: identifier }).then(result => {
       Task.find().then(result => res.send({ data: result }));
     });
   }
